@@ -54,10 +54,10 @@ codegen_overlap_score_gpt35, codegen_overlap_scores_std_gpt35 = MyAnalysis.get_o
 
 # Normalize data into a single dataframe
 # Columns are: model, timestamp, accuracy, verbosity 
-codegen_df = pandas.DataFrame(columns=['model','timestamp','codegen_accuracy','codegen_verbosity'])
+codegen_df = pandas.DataFrame(columns=['model','timestamp','codegen_directly_executable','codegen_verbosity'])
 codegen_df['model'] = ['openaichat/gpt-3.5-turbo-0301','openaichat/gpt-3.5-turbo-0613', 'openaichat/gpt-4-0314','openaichat/gpt-4-0613']
 codegen_df['timestamp'] = ['2023-03-01','2023-06-13','2023-03-01','2023-06-14']
-codegen_df['codegen_accuracy'] = [codegen_acc_score['openaichat/gpt-3.5-turbo-0301'],codegen_acc_score['openaichat/gpt-3.5-turbo-0613'],codegen_acc_score['openaichat/gpt-4-0314'],codegen_acc_score['openaichat/gpt-4-0613']]
+codegen_df['codegen_directly_executable'] = [codegen_acc_score['openaichat/gpt-3.5-turbo-0301'],codegen_acc_score['openaichat/gpt-3.5-turbo-0613'],codegen_acc_score['openaichat/gpt-4-0314'],codegen_acc_score['openaichat/gpt-4-0613']]
 codegen_df['codegen_verbosity'] = [codegen_verb_score['openaichat/gpt-3.5-turbo-0301'],codegen_verb_score['openaichat/gpt-3.5-turbo-0613'],codegen_verb_score['openaichat/gpt-4-0314'],codegen_verb_score['openaichat/gpt-4-0613']]
 
 ################# VISUAL REASONING #################
@@ -79,10 +79,10 @@ vizreason_overlap_score_gpt35, vizreason_overlap_scores_std_gpt35 = MyAnalysis.g
 
 # Normalize data into a single dataframe
 # Columns are: model, timestamp, accuracy, verbosity
-vizreason_df = pandas.DataFrame(columns=['model','timestamp','vizreason_accuracy','vizreason_verbosity'])
+vizreason_df = pandas.DataFrame(columns=['model','timestamp','vizreason_exact_match','vizreason_verbosity'])
 vizreason_df['model'] = ['openaichat/gpt-3.5-turbo-0301','openaichat/gpt-3.5-turbo-0613', 'openaichat/gpt-4-0314','openaichat/gpt-4-0613']
 vizreason_df['timestamp'] = ['2023-03-01','2023-06-13','2023-03-01','2023-06-14']
-vizreason_df['vizreason_accuracy'] = [vizreason_acc_score['openaichat/gpt-3.5-turbo-0301'],vizreason_acc_score['openaichat/gpt-3.5-turbo-0613'],vizreason_acc_score['openaichat/gpt-4-0314'],vizreason_acc_score['openaichat/gpt-4-0613']]
+vizreason_df['vizreason_exact_match'] = [vizreason_acc_score['openaichat/gpt-3.5-turbo-0301'],vizreason_acc_score['openaichat/gpt-3.5-turbo-0613'],vizreason_acc_score['openaichat/gpt-4-0314'],vizreason_acc_score['openaichat/gpt-4-0613']]
 vizreason_df['vizreason_verbosity'] = [vizreason_verb_score['openaichat/gpt-3.5-turbo-0301'],vizreason_verb_score['openaichat/gpt-3.5-turbo-0613'],vizreason_verb_score['openaichat/gpt-4-0314'],vizreason_verb_score['openaichat/gpt-4-0613']]
 
 ################# ANSWERING SENSITIVE QUESTIONS #################
@@ -104,10 +104,10 @@ sensitiveq_overlap_score_gpt35, sensitiveq_overlap_scores_std_gpt35 = MyAnalysis
 
 # Normalize data into a single dataframe
 # Columns are: model, timestamp, accuracy, verbosity
-sensitiveq_df = pandas.DataFrame(columns=['model','timestamp','sensitiveq_accuracy','sensitiveq_verbosity'])
+sensitiveq_df = pandas.DataFrame(columns=['model','timestamp','sensitiveq_answer_rate','sensitiveq_verbosity'])
 sensitiveq_df['model'] = ['openaichat/gpt-3.5-turbo-0301','openaichat/gpt-3.5-turbo-0613', 'openaichat/gpt-4-0314','openaichat/gpt-4-0613']
 sensitiveq_df['timestamp'] = ['2023-03-01','2023-06-13','2023-03-01','2023-06-14']
-sensitiveq_df['sensitiveq_accuracy'] = [sensitiveq_acc_score['openaichat/gpt-3.5-turbo-0301'],sensitiveq_acc_score['openaichat/gpt-3.5-turbo-0613'],sensitiveq_acc_score['openaichat/gpt-4-0314'],sensitiveq_acc_score['openaichat/gpt-4-0613']]
+sensitiveq_df['sensitiveq_answer_rate'] = [sensitiveq_acc_score['openaichat/gpt-3.5-turbo-0301'],sensitiveq_acc_score['openaichat/gpt-3.5-turbo-0613'],sensitiveq_acc_score['openaichat/gpt-4-0314'],sensitiveq_acc_score['openaichat/gpt-4-0613']]
 sensitiveq_df['sensitiveq_verbosity'] = [sensitiveq_verb_score['openaichat/gpt-3.5-turbo-0301'],sensitiveq_verb_score['openaichat/gpt-3.5-turbo-0613'],sensitiveq_verb_score['openaichat/gpt-4-0314'],sensitiveq_verb_score['openaichat/gpt-4-0613']]
 
 ################# TOTAL #################
@@ -132,6 +132,7 @@ total_df = total_df.groupby('timestamp').apply(lambda x: x.set_index('base_model
 print(total_df)
 
 # Save to JSON
+import json
 with open('output/total_hist_eval.json', 'w') as f:
-    f.write(total_df)
+    f.write(json.dumps(total_df, indent=4))
 
