@@ -118,3 +118,20 @@ total_df = pandas.merge(total_df, sensitiveq_df, on=['model','timestamp'])
 
 # Save to CSV
 total_df.to_csv('output/total_hist_eval.csv', index=False)
+
+################# PREPROCESSING FOR WEBAPP #################
+# Add base model column
+total_df['base_model'] = total_df['model'].apply(lambda x: x.split('/')[1]) 
+total_df['base_model'] = total_df['base_model'].apply(lambda x: '-'.join(x.split('-')[:-1]))
+
+print(total_df)
+
+# Convert to a dict where timestamp is the key, with multiple base_model keys inside
+total_df = total_df.groupby('timestamp').apply(lambda x: x.set_index('base_model').to_dict(orient='index')).to_dict()
+
+print(total_df)
+
+# Save to JSON
+with open('output/total_hist_eval.json', 'w') as f:
+    f.write(total_df)
+
